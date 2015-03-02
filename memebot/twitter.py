@@ -36,10 +36,42 @@ def search_in_twitter(keywords):
     else:
         oauth = get_oauth()
 
-    payload = {'status': status}
-    url = "https://api.twitter.com/1.1/statuses/update.json"
+    # https://api.twitter.com/1.1/search/tweets.json?q=cucaracha%20domino&mode=photos&result_type=popular
+    payload = {
+        'q': keywords,
+        'mode': 'photos',
+        'result_type': 'mixed',
+        'count': 2,
+    }
+    url = "https://api.twitter.com/1.1/search/tweets.json"
 
     try:
-        requests.post(url=url, auth=oauth, params=payload)
+        r = requests.get(url=url, auth=oauth, params=payload)
     except:
         print("Error")
+
+    items = []
+    data = r.json()
+    for i in data['statuses']:
+        item = None
+        try:
+            item = i['retweeted_status']
+        except KeyError:
+            pass
+
+        if item is not None:
+            tweet_id = item['id_str']
+            image_urls = []
+            for j in item['entities']['media']:
+                image_urls.append(j['media_url'])
+            status = item['text']
+            screen_name = item['user']['screen_name']
+            retweet_count = item['retweet_count']
+            items.append({
+                'tweet_id': tweet_id,
+                'image_urls': image_urls,
+                'status': status,
+                'screen_name': screen_name,
+                'retweet_count': retweet_count,
+            })
+    return items
