@@ -4,6 +4,14 @@ memebot package
 Submodules
 ----------
 
+memebot.api module
+------------------
+
+.. automodule:: memebot.api
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 memebot.config module
 ---------------------
 
