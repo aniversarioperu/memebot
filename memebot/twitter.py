@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 import requests
 from requests_oauthlib import OAuth1
 
-from salvitobot import config
-from salvitobot.exceptions import NoTwitterToken
+from memebot import config
+from memebot.exceptions import NoTwitterToken
 
 
 REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token"
