@@ -1,0 +1,42 @@
+<html>
+
+<head></head>
+
+<body>
+
+<form action="/memebot/search/" method="post" class="form-inline" role="search">{% csrf_token %}
+             <div class="form-group">
+                 <label class="sr-only" for="query">Keyword</label>
+                 <input style="width:250px;" type="text" id="query" name="q"
+                                   class="form-control"
+                                   placeholder="Tipea persona o palabra clave" />
+             </div>
+               <button type="submit" class="btn btn-info" id="search_button">
+                            <span class="glyphicon glyphicon-search"></span>
+                            Buscar
+               </button>
+           </form>
+
+{% for tweet in embeded_tweets %}
+  {{ tweet|safe }}
+{% endfor %}
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+</body>
+
+</html>

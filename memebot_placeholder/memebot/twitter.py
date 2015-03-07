@@ -3,8 +3,8 @@ from __future__ import unicode_literals
 import requests
 from requests_oauthlib import OAuth1
 
-from memebot import config
-from memebot.exceptions import NoTwitterToken
+from django.conf import settings
+from .exceptions import NoTwitterToken
 
 
 REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token"
@@ -12,12 +12,12 @@ AUTHORIZE_URL = "https://api.twitter.com/oauth/authorize?oauth_token="
 ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token"
 
 
-CONSUMER_KEY = config.key
-CONSUMER_SECRET = config.secret
+CONSUMER_KEY = settings.TWITTER['KEY']
+CONSUMER_SECRET = settings.TWITTER['SECRET']
 
 
-OAUTH_TOKEN = config.token
-OAUTH_TOKEN_SECRET = config.token_secret
+OAUTH_TOKEN = settings.TWITTER['TOKEN']
+OAUTH_TOKEN_SECRET = settings.TWITTER['TOKEN_SECRET']
 
 
 def get_oauth():
@@ -41,7 +41,7 @@ def search_in_twitter(keywords):
         'q': keywords,
         'mode': 'photos',
         'result_type': 'mixed',
-        'count': 2,
+        'count': 20,
     }
     url = "https://api.twitter.com/1.1/search/tweets.json"
 
@@ -60,18 +60,19 @@ def search_in_twitter(keywords):
             pass
 
         if item is not None:
-            tweet_id = item['id_str']
-            image_urls = []
-            for j in item['entities']['media']:
-                image_urls.append(j['media_url'])
-            status = item['text']
-            screen_name = item['user']['screen_name']
-            retweet_count = item['retweet_count']
-            items.append({
-                'tweet_id': tweet_id,
-                'image_urls': image_urls,
-                'status': status,
-                'screen_name': screen_name,
-                'retweet_count': retweet_count,
-            })
+            if 'media' in item['entities']:
+                tweet_id = item['id_str']
+                image_urls = []
+                for j in item['entities']['media']:
+                    image_urls.append(j['media_url'])
+                status = item['text']
+                screen_name = item['user']['screen_name']
+                retweet_count = item['retweet_count']
+                items.append({
+                    'tweet_id': tweet_id,
+                    'image_urls': image_urls,
+                    'status': status,
+                    'screen_name': screen_name,
+                    'retweet_count': retweet_count,
+                })
     return items
